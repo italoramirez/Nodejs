@@ -2,6 +2,9 @@ const express = require('express');
 
 const app = express();
 
+//middleware
+app.use(express.json());
+
 const usuarios = [
     {id: 1, nombre: 'italo'},
     {id: 2, nombre: 'marcela'},
@@ -15,7 +18,22 @@ app.get('/', (req, res) => {
 
 app.get('/api/usuarios', (req, res) => {
     res.send(['italo', 'luis', 'marcela']);
-})
+});
+
+app.post('/api/usuarios', (req, res) => {
+    if (!req.body.nombre || req.body.nombre.length <= 2) {
+        res.status(400).send('Debe ingresar un nombre que tenga mìnimo tres letras');
+        //400 bad request
+        return;
+    } else {
+        const usuario = {
+            id: usuarios.length + 1,
+            nombre: req.body.nombre
+        };
+    }
+    usuarios.push(usuario);
+    res.send(usuario);
+});
 
 //creamos una variable de entorno con export PORT=5000
 /* Le decimos que si la variable de entorno está ocupada, entonces que tome la 3000 */
