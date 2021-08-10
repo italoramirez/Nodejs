@@ -11,7 +11,7 @@ const cursoSchema = new mongoose.Schema({
     },
     estado: {
         type: Boolean,
-        required: true
+        default: true
     },
     imagen: {
         type: String,
@@ -27,4 +27,4 @@ const cursoSchema = new mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('Curso', cursoSchema);
+module.exports = mongoose.model('Libro', cursoSchema);
