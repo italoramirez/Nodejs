@@ -1,21 +1,14 @@
 {
-  "name": "05-express-parte1",
+  "name": "06-mongo-db",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
-    
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "config": "^3.3.6",
-    "debug": "^4.3.2",
-    "express": "^4.17.1",
-    "joi": "^17.4.2",
-    "morgan": "^1.10.0"
+    "mongoose": "^5.13.5"
   }
 }

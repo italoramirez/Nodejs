@@ -1,0 +1,15 @@
+eq => equal, igual
+ne => not equal, no igual
+gt => greater than, mayor que 
+gte => greater than or equal, igual o menor que
+lt => less than, menor que
+lte => less tahn or equals to, menor o igual que
+in => indicar si hay varios valores dentro de una consulta específica
+nin => not in, lo contrario de in
+//or => una u otra 
+//and => las dos condiciones
+//Expresiones regulares
+
+que empiecen por la letra... /^V/
+que finzalice con una palbra.../js$/
+cuando un campo tiene contenido específico.../.*a.*/

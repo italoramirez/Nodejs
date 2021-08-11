@@ -29,7 +29,31 @@ ruta.post('/', (req, res) => {
         })
     });
 
+});
+
+ruta.put('/:id', (req, res) => {
+
+    let result = actualizarCurso(req.params.id, req.body);
+    result.then(respuesta => {
+        res.json(respuesta)
+    }).catch(err => {
+        res.status(400).json(err);
+    })
 })
+
+ruta.delete('/:id', (req, res) => {
+    let resul = desactivarCurso(req.params.id)
+    resul.then(response => {
+        res.json(response);
+    }).catch(err => { res.json(err) })
+})
+
+
+
+async function listarCursos() {
+    let cursos = await Libro.find({ "estado": true });
+    return cursos;
+}
 
 async function crearCurso(body) {
     let curso = new Libro({
@@ -39,9 +63,24 @@ async function crearCurso(body) {
     return await curso.save();
 }
 
-async function listarCursos() {
-    let cursos = await Libro.find({ "estado": true });
-    return cursos;
+async function actualizarCurso(id, body) {
+    let curso = await Libro.findByIdAndUpdate(id, {
+        $set: {
+            titulo: body.titulo,
+            descripcion: body.descripcion,
+        }
+    }, { new: true });
+    return curso;
 }
+
+async function desactivarCurso(id) {
+    let curso = await Libro.findByIdAndUpdate(id, {
+        $set: {
+            estado: false
+        }
+    }, { new: true });
+    return curso;
+}
+
 
 module.exports = ruta;
