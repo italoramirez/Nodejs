@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 const Usuario = require('../models/usuario_model');
 const Joi = require('joi');
 const ruta = express.Router();
@@ -29,14 +30,25 @@ ruta.get('/', (req, res) => {
 
 
 ruta.post('/', (req, res) => {
+
     let body = req.body;
+
+    Usuario.findOne({ email: body.email }, (err, user) => {
+        if (err) {
+            return res.status(400).json({ error: 'Server error' });
+        }
+        if (user) {
+            return res.status(400).json({ msj: 'Usuario existe' })
+        }
+    });
     //validate
     const { error, value } = schema.validate({ nombre: body.nombre, email: body.email });
     if (!error) {
         let resultado = crearUsuario(body);
         resultado.then(user => {
             res.json({
-                valor: user,
+                nombre: user.nombre,
+                email: user.email
             });
         }).catch(err => {
             res.status(400).json({
@@ -60,7 +72,8 @@ ruta.put('/:email', (req, res) => {
         let resultado = actualizarUsuarios(req.params.email, req.body);
         resultado.then(valor => {
             res.json({
-                reponse: valor
+                nombre: valor.nombre,
+                email: valor.email
             })
         }).catch(err => {
             res.status(400).json({
@@ -78,7 +91,8 @@ ruta.delete('/:email', (req, res) => {
     let resultado = desactivarUsuario(req.params.email);
     resultado.then(valor => {
         res.json({
-            usuario: valor
+            nombre: valor.nombre,
+            email: valor.email
         })
     }).catch(err => {
         res.status(400).json({
@@ -88,7 +102,8 @@ ruta.delete('/:email', (req, res) => {
 });
 
 async function listarUsuarioActivos() {
-    let usuarios = await Usuario.find({ "estado": true });
+    let usuarios = await Usuario.find({ "estado": true })
+        .select({ nombre: 1, email: 1 });
     return usuarios;
 }
 
@@ -96,7 +111,7 @@ async function crearUsuario(body) {
     let usuario = new Usuario({
         email: body.email,
         nombre: body.nombre,
-        password: body.password
+        password: bcrypt.hashSync(body.password, 10)
     });
     return await usuario.save();
 }
@@ -105,7 +120,7 @@ async function actualizarUsuarios(email, body) {
     let usuario = await Usuario.findOneAndUpdate({ "email": email }, {
         $set: {
             nombre: body.nombre,
-            password: body.password,
+            password: bcrypt.hashSync(body.password, 10)
         }
     }, { new: true })
     return usuario;
