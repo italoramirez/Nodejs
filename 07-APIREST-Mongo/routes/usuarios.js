@@ -1,4 +1,7 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
+const verificarToken = require('../middlewares/auth')
+const config = require('config');
 const bcrypt = require('bcrypt');
 const Usuario = require('../models/usuario_model');
 const Joi = require('joi');
@@ -17,7 +20,22 @@ const schema = Joi.object({
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
 });
 
-ruta.get('/', (req, res) => {
+/* Se separa el middleware a su propia capa */
+// let verificarToken = (req, res, next) => {
+//     let token = req.get('Authorization');
+//     jwt.verify(token, config.get('configToken.SEED'), (err, decoded) => {
+//         if (err) {
+//             return res.status(401).json({
+//                 err
+//             })
+//         }
+//         // res.send(token);
+//         req.usuario = decoded.usuario;
+//         next();
+//     });
+// }
+
+ruta.get('/', verificarToken, (req, res) => {
     let resultado = listarUsuarioActivos();
     resultado.then(usuarios => {
         res.json(usuarios)
@@ -64,7 +82,7 @@ ruta.post('/', (req, res) => {
 })
 
 
-ruta.put('/:email', (req, res) => {
+ruta.put('/:email', verificarToken, (req, res) => {
     //validate
     const { error, value } = schema.validate({ nombre: req.body.nombre });
 
@@ -87,7 +105,7 @@ ruta.put('/:email', (req, res) => {
     }
 })
 
-ruta.delete('/:email', (req, res) => {
+ruta.delete('/:email', verificarToken, (req, res) => {
     let resultado = desactivarUsuario(req.params.email);
     resultado.then(valor => {
         res.json({

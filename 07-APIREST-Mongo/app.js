@@ -3,10 +3,12 @@ const cursos = require('./routes/cursos');
 const auth = require('./routes/auth');
 const express = require('express');
 const mongoose = require('mongoose');
+const config = require('config');
 
 
 
-mongoose.connect('mongodb://localhost:27017/demo', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+// mongoose.connect('mongodb://localhost:27017/demo', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+mongoose.connect(config.get('configDB.HOST'), { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
     .then(() => console.log('Conectado a mongo'))
     .catch(err => console.log('Error' + err))
 

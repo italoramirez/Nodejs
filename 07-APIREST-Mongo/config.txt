@@ -1,0 +1,4 @@
+//variabel de entorno de producción
+
+export NODE_ENV=development
+export NODE_ENV=production
